@@ -1,0 +1,8 @@
+{
+  "name": "room-painting-calculator",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@gitlab.com:marlonbranco/room-painting-calculator.git",
+  "author": "Marlon B Valentino <marlon.valentino@payface.com.br>",
+  "license": "MIT"
+}
