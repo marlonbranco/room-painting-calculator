@@ -53,26 +53,24 @@ console.log(
 // calculate the number of buckets needed
 // to paint the walls
 // each liter of paint can cover 5 square meters
+// the buckets are in the following sizes:
 
-const paintBuckets = (area) => {
-  const buckets = [0.5, 2.5, 3.6, 18.0];
-  const litersNeeded = area / 5;
-  let i = 0;
-  let littersPerBucket = 0;
-  let bucketsNeeded = [];
-  for (i = 0; i < buckets.length; i++) {
-    littersPerBucket = buckets[i] * litersNeeded;
-    bucketsNeeded.push(littersPerBucket);
-    if (littersPerBucket % buckets[i] !== 0) {
-    }
-    console.log(littersPerBucket);
-    i++;
-  }
-  return bucketsNeeded;
-};
+const buckets = [0.5, 2.5, 3.6, 18.0];
 
 const totalArea = wallsArea - totalAreaOfDoorsAndWindows;
-console.log(paintBuckets(totalArea));
+
+const bucketsCalculator = (area, buckets) => {
+  if (buckets[0] < buckets[1]) buckets.reverse();
+  const change = {};
+  buckets.forEach((b) => {
+    change[b] = Math.floor(area / b);
+    area -= b * change[b];
+  });
+  return change;
+};
+
+const bucketsNeeded = bucketsCalculator(totalArea, buckets);
+console.log(bucketsNeeded);
 // const bucketsNeeded = paintBuckets(totalArea);
 
 // console.log("Wall 2 area: " + wallAreaCalculator(wall2));
