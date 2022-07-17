@@ -1,11 +1,14 @@
-import './App.css';
+import { BrowserRouter as Router } from "react-router-dom";
+import  GlobalStyles from './styles/global'
+import Calculator from "./pages/Calculator";
 
-function App() {
-  return (
-    <div className="App">
-        <button className="btn">Button</button>
-    </div>
+const App = () => (
+    <>
+      <Router>
+      <Calculator />
+      </Router>
+      <GlobalStyles/>
+    </>
   );
-}
 
-export default App;
+export default App

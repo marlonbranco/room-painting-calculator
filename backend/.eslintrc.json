@@ -1,0 +1,32 @@
+{
+  "env": {
+    "node": true,
+    "jest": true
+  },
+  "extends": [    
+      "plugin:@typescript-eslint/recommended",
+      "plugin:prettier/recommended"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 12,
+    "sourceType": "module",
+    "project": "./tsconfig.json",
+    "tsconfigRootDir": "./backend"
+  },
+  "plugins": ["@typescript-eslint"],
+  "rules": {
+      "no-useless-constructor": "off",
+      "import/no-unresolved": "off",
+      "no-console": "off",
+      "no-unused-expressions": 0,
+      "no-restricted-syntax": 0,
+      "no-underscore-dangle": 0,
+      "class-methods-use-this": "off",
+      "import/prefer-default-export": "off",
+      "import/extensions": [0, ".ts"],
+      "@typescript-eslint/interface-name-prefix": "off",
+      "@typescript-eslint/explicit-function-return-type": "off",
+      "@typescript-eslint/explicit-module-boundary-types": "off",
+      "@typescript-eslint/no-explicit-any": "off"
+    }
+}
