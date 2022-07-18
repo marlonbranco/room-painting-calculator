@@ -1,11 +1,12 @@
 import { Router } from 'express';
-import { getBucketsAmountController } from '../controllers/GetBucketsAmountController';
-
+import { postBucketsAmountController } from '../controllers/PostBucketsAmountController';
+import roomValidation from '../middlewares/roomValidation';
 const bucketsCalculatorRouter = Router();
 
-bucketsCalculatorRouter.get(
+bucketsCalculatorRouter.post(
   '/calculator/buckets',
-  getBucketsAmountController.index,
+  roomValidation,
+  postBucketsAmountController.create,
 );
 
 export default bucketsCalculatorRouter;
