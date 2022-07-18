@@ -14,23 +14,23 @@ const roomValidationSchema = (
   }
   const Wall = z.object({
     width: z.number().positive(),
-    height: z.number().min(2.2).positive(),
+    height: z.number().positive(),
+    numberOfDoors: z.number().nonnegative(),
+    numberOfWindows: z.number().nonnegative(),
   });
 
   const Room = z.object({
     walls: z.array(Wall).min(4).max(4),
-    numberOfDoors: z.number().positive(),
-    numberOfWindows: z.number().positive(),
   });
 
   try {
     Room.parse(request.body);
     next();
-  } catch (e) {
+  } catch (e: any) {
     if (e instanceof ZodError) {
       throw new ErrorsApp(JSON.parse(e.message), 400);
     } else {
-      throw new ErrorsApp(e.message, 400);
+      throw new ErrorsApp(JSON.parse(e.message), 400);
     }
   }
 };

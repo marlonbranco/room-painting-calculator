@@ -15,18 +15,63 @@ const doorMeasurer = {
 
 export default class PostBucketsAmountService {
   public async execute(room: IRoomDTO): Promise<any> {
-    const { walls, numberOfDoors, numberOfWindows } = room;
+    const { walls } = room;
+    console.log(walls);
+
+    const numberOfWindows = walls.reduce((acc, wall) => {
+      return acc + wall.numberOfWindows;
+    }, 0);
+
+    const numberOfDoors = walls.reduce((acc, wall) => {
+      return acc + wall.numberOfDoors;
+    }, 0);
+
     const windowsArea = areaCalculator(numberOfWindows, windowMeasurer);
     const doorsArea = areaCalculator(numberOfDoors, doorMeasurer);
 
     const totalAreaOfDoorsAndWindows = windowsArea + doorsArea;
 
-    walls.map(({ width, height }) => {
+    walls.map(({ width, height, numberOfDoors, numberOfWindows }) => {
       const AreaInSquareMeter = width * height;
 
       if (AreaInSquareMeter < 1 || AreaInSquareMeter > 50) {
         throw new ErrorsApp(
           'The walls must have a minimum of 1 square meter and up to a maximum of 50 square meters',
+          400,
+        );
+      }
+
+      if (numberOfDoors % 1 !== 0) {
+        throw new ErrorsApp('The number of Doors must be an integer', 400);
+      }
+
+      if (numberOfWindows % 1 !== 0) {
+        throw new ErrorsApp('The number of Windows must be an integer', 400);
+      }
+
+      if (numberOfDoors > 0 && height < 2.2) {
+        throw new ErrorsApp(
+          'Walls with doors must have a height of at least 2.2 meters',
+          400,
+        );
+      }
+
+      if (numberOfDoors > 0 && width < 0.8) {
+        throw new ErrorsApp(
+          'Walls with doors must have a width of at least 0.8 meters',
+          400,
+        );
+      }
+
+      if (numberOfWindows > 0 && height < 1.2) {
+        throw new ErrorsApp(
+          'Walls with windows must have a height of at least 1.2 meters',
+          400,
+        );
+      }
+      if (numberOfWindows > 0 && width < 2) {
+        throw new ErrorsApp(
+          'Walls with windows must have a width of at least 2 meters',
           400,
         );
       }
