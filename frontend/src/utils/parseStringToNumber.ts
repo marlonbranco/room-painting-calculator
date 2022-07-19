@@ -1,0 +1,1 @@
+export const parseStringToNumber = (value: string) => parseFloat(value.replace(/,/g, '.'));

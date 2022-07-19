@@ -15,6 +15,7 @@ export default createGlobalStyle`
   }
   body, input, button {
     font: 16px "Roboto", sans-serif;
+    font-weight: 300;
   }
   body html #root {
     height: 100%;

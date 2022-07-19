@@ -1,5 +1,5 @@
 {
-  "name": "backend",
+  "name": "room-painting-backend",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
@@ -13,8 +13,7 @@
   },
   "scripts": {
     "build": "babel src --extensions \".js,.ts\" --out-dir dist/src --copy-files --no-copy-ignored",
-    "deploy": "yarn && yarn build && yarn start",
-    "deploy:docker": "yarn && yarn build && docker compose down && docker compose up -d",
+    "deploy": "npm run build && npm run start",
     "start": "node dist/src/shared/infra/http/server.js",
     "start:dev": "ts-node-dev -r tsconfig-paths/register --inspect --respawn --transpile-only --ignore-watch node_modules src/shared/infra/http/server.ts"
   },

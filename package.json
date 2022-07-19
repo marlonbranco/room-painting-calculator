@@ -4,5 +4,8 @@
   "main": "index.js",
   "repository": "git@gitlab.com:marlonbranco/room-painting-calculator.git",
   "author": "Marlon B Valentino <marlon.valentino@payface.com.br>",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "deploy:docker": "docker compose down && docker compose up -d"
+  }
 }

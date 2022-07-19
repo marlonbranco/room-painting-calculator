@@ -1,51 +1,24 @@
-import { useState } from 'react';
+import {FC, useState } from 'react';
 import { useForm,  SubmitHandler  } from "react-hook-form";
 import {
     Container,
-    Button,
+    SubtitleText,
+    Form,
+    FormButton,
     UnorderedList,
-    WallsList,
-    List,
-    Input,
     WallsDiv,
+    WallsLabel,
     WallsInput,
-    ErrorP
+    Table,
+    ErrorText
   } from "./styles";
 import { api } from "../../services/api";
 
+import { IRoomInput } from './@types'
+import { parseFormData } from './helpers';
 
-
-type IWall = {
-    height: string;
-    width: string;
-    numberOfDoors: string;
-    numberOfWindows: string;
-}
-
-type IWallInput = {
-    walls: IWall[];
-}
-
-const convertToNumber = (walls: IWall)  =>{
-    const {height, width, numberOfDoors, numberOfWindows} = walls;
-    return {
-        height: height ? parseFloat(height.replace(/,/g, '.')) : Number(0),
-        width: width ? parseFloat(width.replace(/,/g, '.')) : Number(0),
-        numberOfDoors: numberOfDoors ? parseFloat(width.replace(/,/g, '.')) : Number(0),
-        numberOfWindows: numberOfWindows ? parseFloat(width.replace(/,/g, '.')) : Number(0),
-    }
-}
-
-const parseFormData = ({ walls }: IWallInput) => {
-    const parsedWalls = walls.map(convertToNumber);
-    return { 
-        walls: parsedWalls, 
-    }
-
-}
-
-const Calculator  = () => {
-    const [data, useData] = useState<IWallInput>({
+const Calculator: FC  = () => {
+    const [wallsData] = useState<IRoomInput>({
         walls: [
             { height: '0',width: '0', numberOfDoors: '0', numberOfWindows: '0' },
             { height: '0',width: '0', numberOfDoors: '0', numberOfWindows: '0' },
@@ -53,68 +26,120 @@ const Calculator  = () => {
             { height: '0',width: '0', numberOfDoors: '0', numberOfWindows: '0' },
         ]
     });
+
+    const [response, setResponse] = useState<any>();
     const [loading, setLoading] = useState(false);
+    const [hasError, setHasError] = useState({hasError: false, message: ''});
+    const { register, handleSubmit, reset } = useForm<IRoomInput>();
 
-    const { register, formState: { errors }, handleSubmit } = useForm<IWallInput>();
-
-
-    const onSubmit: SubmitHandler<IWallInput> = async (data) => {
+    const onSubmit: SubmitHandler<IRoomInput> = async (data) => {
         setLoading(true);
         const walls = parseFormData(data)
-        await api.post('/calculator/buckets', { walls }).then(res => {
+        console.log(walls)
+        await api.post('/calculator/buckets', walls).then(res => {
             console.log(res);
-        }).catch(err => console.log(err.response)).finally(() => setLoading(false));
+            setHasError({hasError: false, message: ''});
+            setResponse(Object.entries(res.data));
+        }).catch(err => {
+            const { message } = err.response.data;
+            setHasError({hasError: true, message});
+            console.log(err.response)
+        }).finally(() => {
+            setLoading(false);
+        });
+    }
+
+    const handleFormClear = () => {
+        reset(wallsData);
+        setHasError({hasError: false, message: ''});
+        setResponse(null);
     }
 
     return (
-
         <Container>
-            <h1>Buckets Caltulator</h1>
-            <p>Calculate the Amount of buckets to paint a room</p>
-
-                <form onSubmit={handleSubmit(onSubmit)}>
+            <h1>Room Painting Caltulator 📐</h1>
+            <SubtitleText>Type in the information of each wall:</SubtitleText>
+                <Form onSubmit={handleSubmit(onSubmit)}>
                     <UnorderedList>
-                    <h4>Walls</h4>
-
                     <WallsDiv>
                         <div className="height">
-                            
-                            {data.walls.map((item, i) => (
-                                <WallsList key={i}>
-                                    <label>Height:</label>
-                                    <WallsInput key={item.height} {...register(`walls.${i}.height`, { required: true, min: 2.2 })}/>
-                                </WallsList>
-                            ))}
+                        {wallsData.walls.map((item, i) => (
+                            <li key={i}>
+                                <WallsLabel>Height:</WallsLabel>
+                                <WallsInput key={item.height} type="number" min="0" step="any" formNoValidate {...register(`walls.${i}.height`)}/>
+                            </li>
+                        ))}
                         </div> 
                         <div  className="width">
-                        {data.walls.map((item, i) => (
-                            <WallsList key={i}>
-                                <label>Width:</label>
-                                <WallsInput key={item.width} {...register(`walls.${i}.width`, { required: true, min: 0.1 })}/>
-                            </WallsList>
+                        {wallsData.walls.map((item, i) => (
+                            <li key={i}>
+                                <WallsLabel>Width:</WallsLabel>
+                                <WallsInput key={item.width} type="number" min="0" step="any" formNoValidate {...register(`walls.${i}.width`)}/>
+                            </li>
                         ))}
                         </div>      
-                        <div  className="width">
-                        {data.walls.map((item, i) => (
-                            <WallsList key={i}>
-                                <label>Number of Doors:</label>
-                                <WallsInput key={item.numberOfDoors} {...register(`walls.${i}.numberOfDoors`)}/>
-                            </WallsList>
+                        <div  className="numberOfDoors">
+                        {wallsData.walls.map((item, i) => (
+                            <li className="doors-number-inputs" key={i}>
+                                <WallsLabel>Number of Doors:</WallsLabel>
+                                <WallsInput key={item.numberOfDoors} type="number" min="0" step="any" formNoValidate {...register(`walls.${i}.numberOfDoors`)}/>
+                            </li>
                         ))}
                         </div>     
-                        <div  className="width">
-                        {data.walls.map((item, i) => (
-                            <WallsList key={i}>
-                                <label>Number of Windows:</label>
-                                <WallsInput key={item.numberOfWindows} {...register(`walls.${i}.numberOfWindows`)}/>
-                            </WallsList>
+                        <div  className="numberOfWindows">
+                        {wallsData.walls.map((item, i) => (
+                            <li className="windows-number-inputs" key={i}>
+                                <WallsLabel>Number of Windows:</WallsLabel>
+                                <WallsInput key={item.numberOfWindows} type="number" min="0" step="any" formNoValidate {...register(`walls.${i}.numberOfWindows`)}/>
+                            </li>
                         ))}
                         </div>                  
                     </WallsDiv>
                     </UnorderedList>
-            <Button type="submit">Calculate</Button>
-            </form>
 
+                    {hasError.hasError ? <ErrorText>{hasError.message}</ErrorText> : null}
+
+                    {!hasError.hasError && response?.length >= 1 ? <Table>
+                        <thead>
+                            <tr>
+                                <th>Buckets</th>
+                                {response.map((value: any) => (
+                                    <th key={value[0]}>{value[0]} L</th>
+                                ))}   
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Amount</td>
+                                {response.map((value: any) => (
+                                    <td key={value[0]}>{value[1]}</td>
+                                ))}      
+                            </tr>
+                        </tbody>
+                    </Table> : null}
+                
+                {loading 
+                ? <FormButton type="submit" className="btn-loading" disabled={loading}>Loading...</FormButton>
+                : <FormButton type="submit" className="btn-submit">Calculate</FormButton>}
+                {loading 
+                ? <FormButton type="reset" className="btn-loading" disabled>Loading...</FormButton>
+                : <FormButton type="reset" className="btn-reset" onClick={handleFormClear}>Clear</FormButton>}
+            </Form>
+            <SubtitleText>Standart measurers of Doors & Windows:</SubtitleText>
+            <Table>
+                <thead>
+                    <tr>
+                        <th>Doors</th>
+                        <th>Windows</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>0.80m x 1.90m</td>
+                        <td>2.00m x 1.20m</td>
+                    </tr>
+                </tbody>
+            </Table>
         </Container>
     )
 }

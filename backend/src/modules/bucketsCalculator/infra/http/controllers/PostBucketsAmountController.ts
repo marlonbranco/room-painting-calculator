@@ -1,8 +1,7 @@
 import { performance } from 'perf_hooks';
 import { Request, Response } from 'express';
 
-import PostBucketsAmountService from '@modules/bucketsCalculator/useCases/PostBucketsAmountService';
-import IRoomDTO from '@modules/bucketsCalculator/dtos/IRoomDTO';
+import PostBucketsAmountService from '@modules/bucketsCalculator/services/PostBucketsAmountService';
 
 const postBucketsAmountService = new PostBucketsAmountService();
 
@@ -10,9 +9,9 @@ class PostBucketsAmountController {
   public async create(request: Request, response: Response) {
     const initTime = performance.now();
 
-    const room: IRoomDTO = request.body;
+    const walls = request.body;
 
-    const domainSum = await postBucketsAmountService.execute(room);
+    const bucketsAmount = await postBucketsAmountService.execute(walls);
 
     const endTime = performance.now();
 
@@ -20,7 +19,7 @@ class PostBucketsAmountController {
 
     process.stdout.write(`\nBUCKETS AMOUNT OBTAINED IN ${executionTime}s\n`);
 
-    return response.json(domainSum);
+    return response.json(bucketsAmount);
   }
 }
 
