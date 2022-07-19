@@ -60,3 +60,7 @@ Agora abra a sua aplicação do `Docker` e clique no container `room-painting-ca
 ```bash
 http://localhost:3030/
 ```
+##### Se a aplicação for deployada será possível visualizá-lá
+![Calculadora](.gitlab/media/calculator-deployed.png)
+##### Após preencher os dados corretamente e submetêlos
+![Calculadora](.gitlab/media/calculator-tested.png)
