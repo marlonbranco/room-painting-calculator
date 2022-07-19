@@ -31,7 +31,7 @@ Agora abra a sua aplicação do `Docker` e clique no container `room-painting-ca
 
 ### Pasta raiz do projeto 📁
 ```
-    ├── .github        # Arquivos utilizados pelo GitHub
+    ├── .gitlab        # Arquivos utilizados pelo Gitlab
     ├── src            # Arquivos de Recursos da aplicação
     │   ├── modules    # Módulos da aplicação onde se encontrão os domínios
     │   └── shared     # Pasta com os recursos compartilhados entre os domínios
